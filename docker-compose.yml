@@ -1,0 +1,29 @@
+services:
+  # 1. Python 應用程式
+  web-api:
+    build: .
+    ports:
+      - "5002:5000"
+    # 注意：這裡只保留一個 restart
+    restart: always
+    environment:
+      - DB_HOST=database
+      - DB_USER=root
+      - DB_PASSWORD=1234qwer
+      - DB_NAME=my_app_db
+    depends_on:
+      - database
+    volumes:
+      - ./logs:/app/logs
+
+  # 2. MariaDB 資料庫
+  database:
+    image: mariadb:10.6
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234qwer
+      MYSQL_DATABASE: my_app_db
+    ports:
+      - "13307:3306"
+    volumes:
+      - ./mysql_data:/var/lib/mysql
